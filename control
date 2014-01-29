@@ -1,0 +1,11 @@
+Package: com.pNre.blurpaper
+Name: Blurpaper
+Depends: mobilesubstrate, preferenceloader, firmware (>= 7)
+Version: 0.0.6
+Architecture: iphoneos-arm
+Description: Blur, blur everywhere.
+Depiction: http://repo.pnre.co/depics/blurpaper/
+Maintainer: pNre <pnre00+blurpaper@gmail.com>
+Author: pNre <pnre00+blurpaper@gmail.com>
+Section: Tweaks
+Icon: file:///Library/PreferenceBundles/BlurpaperPrefs.bundle/Blurpaper@2x.png

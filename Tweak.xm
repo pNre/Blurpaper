@@ -25,7 +25,6 @@ static void reloadSettingsNotification(CFNotificationCenterRef notificationCente
     %orig;
 
     reloadSettings();
-    //CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("com.pNre.blurpaper/settingsupdated"), NULL, NULL, TRUE);
 
 }
 

@@ -1,3 +1,5 @@
+#import <substrate.h>
+
 #import "PNBlurController.h"
 #import "PNBackdropView.h"
 
@@ -74,7 +76,7 @@
 
 - (BOOL)shouldHook {
 
-    return _settings.TweakEnabled;
+    return _settings.TweakEnabled && (_settings.BlurHomescreen || _settings.BlurLockscreen);
 
 }
 
@@ -129,19 +131,35 @@
     UIView * _backgroundView = MSHookIvar<UIView *>(dockView, "_backgroundView");
     UIView * _highlightView = MSHookIvar<UIView *>(dockView, "_highlightView");
 
-    if (_backgroundView) {
+    if (_backgroundView && [_backgroundView isHidden] == _settings.ShowDockBackground) {
         [_backgroundView setHidden:!_settings.ShowDockBackground];
     }
 
-    if (_highlightView) {
+    if (_highlightView && [_highlightView isHidden] == _settings.ShowDockSeparator) {
         [_highlightView setHidden:!_settings.ShowDockSeparator];
     }
+
+}
+
+- (void)cleanupBackdrops {
+
+    SBWallpaperController * wallpaperController = [%c(SBWallpaperController) sharedInstance];
+
+    SBFWallpaperView * _lockscreenWallpaperView = MSHookIvar<SBFWallpaperView *>(wallpaperController, "_lockscreenWallpaperView");
+    SBFWallpaperView * _homescreenWallpaperView = MSHookIvar<SBFWallpaperView *>(wallpaperController, "_homescreenWallpaperView");
+    SBFWallpaperView * _sharedWallpaperView = MSHookIvar<SBFWallpaperView *>(wallpaperController, "_sharedWallpaperView");
+
+    [[PNBlurController sharedInstance] removeBackdropFromWallpaperView:_sharedWallpaperView];
+    [[PNBlurController sharedInstance] removeBackdropFromWallpaperView:_lockscreenWallpaperView];
+    [[PNBlurController sharedInstance] removeBackdropFromWallpaperView:_homescreenWallpaperView];
 
 }
 
 - (void)settingsDidChange {
 
     [self applyDockChanges];
+
+    [self cleanupBackdrops];
 
     [[%c(SBWallpaperController) sharedInstance] _updateWallpaperForLocations:0 withCompletion:nil];
     [[%c(SBWallpaperController) sharedInstance] _updateEffectViewForVariant:kVariantLockscreen withFactory:nil];

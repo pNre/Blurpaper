@@ -1,3 +1,5 @@
+#import <substrate.h>
+
 #import "PNBlurController.h"
 #import "Private.h"
 #import "Logging.h"
@@ -23,7 +25,6 @@
 
     SBFWallpaperView * _sharedWallpaperView = MSHookIvar<SBFWallpaperView *>(self, "_sharedWallpaperView");
 
-    [[PNBlurController sharedInstance] removeBackdropFromWallpaperView:_sharedWallpaperView];
     [[PNBlurController sharedInstance] applyBackdropToWallpaperView:_sharedWallpaperView forVariant:kVariantLockscreen];
     
 }
@@ -35,17 +36,13 @@
     if (![[PNBlurController sharedInstance] shouldHook])
         return;
 
-    SBFWallpaperView * _lockscreenWallpaperView = MSHookIvar<SBFWallpaperView *>(self, "_lockscreenWallpaperView");
-    SBFWallpaperView * _homescreenWallpaperView = MSHookIvar<SBFWallpaperView *>(self, "_homescreenWallpaperView");
-
-    [[PNBlurController sharedInstance] removeBackdropFromWallpaperView:_lockscreenWallpaperView];
-    [[PNBlurController sharedInstance] removeBackdropFromWallpaperView:_homescreenWallpaperView];
-
     if ([PNBlurController sharedInstance].settings.BlurLockscreen) {
+        SBFWallpaperView * _lockscreenWallpaperView = MSHookIvar<SBFWallpaperView *>(self, "_lockscreenWallpaperView");
         [[PNBlurController sharedInstance] applyBackdropToWallpaperView:_lockscreenWallpaperView forVariant:kVariantLockscreen];
     }
 
     if ([PNBlurController sharedInstance].settings.BlurHomescreen) {
+        SBFWallpaperView * _homescreenWallpaperView = MSHookIvar<SBFWallpaperView *>(self, "_homescreenWallpaperView");
         [[PNBlurController sharedInstance] applyBackdropToWallpaperView:_homescreenWallpaperView forVariant:kVariantHomescreen];
     }
 

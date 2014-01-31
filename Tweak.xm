@@ -20,7 +20,7 @@ static void reloadSettingsNotification(CFNotificationCenterRef notificationCente
 
 %hook SpringBoard
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+- (void)applicationDidFinishLaunching:(id)application {
     
     %orig;
 

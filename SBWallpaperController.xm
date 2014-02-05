@@ -26,7 +26,7 @@
     SBFWallpaperView * _sharedWallpaperView = MSHookIvar<SBFWallpaperView *>(self, "_sharedWallpaperView");
 
     [[PNBlurController sharedInstance] applyBackdropToWallpaperView:_sharedWallpaperView forVariant:kVariantLockscreen];
-    
+
 }
 
 - (void)_updateSeparateWallpaper {

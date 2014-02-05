@@ -3,7 +3,7 @@
 
 @interface PNBlurController : NSObject
 
-@property (nonatomic, assign) struct {
+@property (nonatomic, assign) struct BLPSettings {
 
         BOOL TweakEnabled;
 
@@ -18,6 +18,13 @@
         BOOL BlurLockscreen;
         BOOL BlurHomescreen;
 
+        //  Radius
+        CGFloat HomescreenBlurRadius;
+        BOOL HomescreenBlurRadiusDefault;
+
+        CGFloat LockscreenBlurRadius;
+        BOOL LockscreenBlurRadiusDefault;
+
         //  Blur classes
         Class LockscreenBlurClass;
         Class HomescreenBlurClass;
@@ -26,7 +33,9 @@
 
 + (instancetype)sharedInstance;
 
+- (void)settingsDidChange;
 - (void)applySettings:(NSDictionary *)settings;
+- (void)applyDockChangesOnView:(SBDockView *)dockView;
 
 - (void)removeBackdropFromWallpaperView:(SBFWallpaperView *)view;
 - (void)applyBackdropToWallpaperView:(SBFWallpaperView *)view forVariant:(NSInteger)variant;

@@ -183,6 +183,8 @@
 - (id)initWithFrame:(CGRect)frame settings:(_UIBackdropViewSettings *)settings;
 - (id)initWithSettings:(id)arg1;
 
+- (void)setBlurRadius:(float)arg1;
+
 - (void)setShouldRasterizeEffectsView:(BOOL)arg1;
 
 - (void)setComputesColorSettings:(BOOL)arg1;

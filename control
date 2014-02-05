@@ -1,7 +1,7 @@
 Package: com.pNre.blurpaper
 Name: Blurpaper
 Depends: mobilesubstrate, preferenceloader, firmware (>= 7)
-Version: 0.0.7
+Version: 0.0.8
 Architecture: iphoneos-arm
 Description: Blur, blur everywhere.
 Depiction: http://repo.pnre.co/depics/blurpaper/

@@ -6,7 +6,8 @@
 
 - (void)addAnimation:(CAAnimation *)animation forKey:(NSString *)key {
 
-    if ([PNBlurController sharedInstance].settings.BlurFading) {
+    if (![[PNBlurController sharedInstance] shouldHook] || 
+         [PNBlurController sharedInstance].settings.BlurFading) {
         [super addAnimation:animation forKey:key];
         return;
     }

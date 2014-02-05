@@ -15,6 +15,7 @@ PNWallpaperLayer.xm PNLayer.xm \
 _UIBackdropView.xm	\
 SBFWallpaperView.xm	\
 SBWallpaperController.xm \
+SBDockView.xm \
 NSUserDefaults.xm
 
 Blurpaper_FRAMEWORKS = UIKit QuartzCore

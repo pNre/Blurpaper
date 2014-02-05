@@ -17,7 +17,7 @@
     
     [backdropSettings setBlurRadius:props.blurRadius];
 
-    [view applySettings:backdropSettings];
+    //[view applySettings:backdropSettings];
     [view transitionToSettings:backdropSettings];
 
 }

@@ -11,6 +11,7 @@
 
 @implementation PNBlurController {
     NSDictionary * _blurClasses;
+    BOOL _didLoadSettings;
 }
 
 + (instancetype)sharedInstance {
@@ -30,6 +31,8 @@
 
     if (self) {
 
+        _didLoadSettings = NO;
+
         //  Init settings to default values
         _settings.TweakEnabled = YES;
 
@@ -41,6 +44,11 @@
 
         _settings.BlurHomescreen = YES;
         _settings.BlurLockscreen = YES;
+
+        _settings.HomescreenBlurRadius = 2;
+        _settings.HomescreenBlurRadiusDefault = YES;
+        _settings.LockscreenBlurRadius = 2;
+        _settings.LockscreenBlurRadiusDefault = YES;
 
         _settings.HomescreenBlurClass = [PNBackdropViewSettingsDefault class];
         _settings.LockscreenBlurClass = [PNBackdropViewSettingsDefault class];
@@ -67,10 +75,35 @@
 
 }
 
+- (void)dealloc {
+
+    [_blurClasses release];
+    [super dealloc];
+
+}
+
+- (struct BLPSettings)settings {
+
+    if (!_didLoadSettings) {
+
+        //  Load settings plist
+        NSDictionary * settings = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Library/Preferences/com.pNre.blurpaper.plist"];
+
+        if (!settings)
+            return _settings;
+
+        [[PNBlurController sharedInstance] applySettings:settings];
+
+    }
+
+    return _settings;
+
+}
+
 //  Check if homescreen and lockscreen are using the same wallpaper & blur style
 - (BOOL)variantsShareBlur {
 
-    return ([_settings.HomescreenBlurClass isEqual:_settings.LockscreenBlurClass]) && _settings.BlurHomescreen && _settings.BlurLockscreen;
+    return ([self.settings.HomescreenBlurClass isEqual:self.settings.LockscreenBlurClass]) && self.settings.BlurHomescreen && self.settings.BlurLockscreen;
 
 }
 
@@ -97,11 +130,32 @@
 
     PNBackdropView * backdrop = [[PNBackdropView alloc] initWithSettingsClass:backdropClass];
 
-    PNLog(@"Adding backdrop %@ to %@", backdrop, view);
+    PNLog(@"Adding backdrop %@ to %@ with class %@", backdrop, view, backdropClass);
+
+    if (variant == kVariantLockscreen && !self.settings.LockscreenBlurRadiusDefault) {
+        [backdrop.inputSettings setBlurRadius:self.settings.LockscreenBlurRadius];
+    } else if (variant == kVariantHomescreen && !self.settings.HomescreenBlurRadiusDefault) {
+        [backdrop.inputSettings setBlurRadius:self.settings.HomescreenBlurRadius];
+    }
 
     [view addSubview:backdrop];
     
     [backdrop release];
+
+}
+
+- (void)applyDockChangesOnView:(SBDockView *)dockView {
+
+    UIView * _backgroundView = MSHookIvar<UIView *>(dockView, "_backgroundView");
+    UIView * _highlightView = MSHookIvar<UIView *>(dockView, "_highlightView");
+
+    if (_backgroundView && [_backgroundView isHidden] == self.settings.ShowDockBackground) {
+        [_backgroundView setHidden:!_settings.ShowDockBackground];
+    }
+
+    if (_highlightView && [_highlightView isHidden] == self.settings.ShowDockSeparator) {
+        [_highlightView setHidden:!_settings.ShowDockSeparator];
+    }
 
 }
 
@@ -128,16 +182,7 @@
         return;
     }
 
-    UIView * _backgroundView = MSHookIvar<UIView *>(dockView, "_backgroundView");
-    UIView * _highlightView = MSHookIvar<UIView *>(dockView, "_highlightView");
-
-    if (_backgroundView && [_backgroundView isHidden] == _settings.ShowDockBackground) {
-        [_backgroundView setHidden:!_settings.ShowDockBackground];
-    }
-
-    if (_highlightView && [_highlightView isHidden] == _settings.ShowDockSeparator) {
-        [_highlightView setHidden:!_settings.ShowDockSeparator];
-    }
+    [self applyDockChangesOnView:dockView];
 
 }
 
@@ -169,6 +214,8 @@
 
 //  Load settings from settings dictionary
 - (void)applySettings:(NSDictionary *)settings {
+
+    _didLoadSettings = YES;
 
     if ([settings objectForKey:@"TweakEnabled"])
         _settings.TweakEnabled = [[settings objectForKey:@"TweakEnabled"] boolValue];
@@ -203,7 +250,17 @@
     if (!_settings.HomescreenBlurClass)
         _settings.HomescreenBlurClass = [%c(_UIBackdropViewSettingsBlur) class];
 
-    [self settingsDidChange];
+    if ([settings objectForKey:@"HomescreenBlurRadius"])
+        _settings.HomescreenBlurRadius = [[settings objectForKey:@"HomescreenBlurRadius"] floatValue];
+
+    if ([settings objectForKey:@"LockscreenBlurRadius"])
+        _settings.LockscreenBlurRadius = [[settings objectForKey:@"LockscreenBlurRadius"] floatValue];
+    
+    if ([settings objectForKey:@"HomescreenBlurRadiusDefault"])
+        _settings.HomescreenBlurRadiusDefault = [[settings objectForKey:@"HomescreenBlurRadiusDefault"] boolValue];
+
+    if ([settings objectForKey:@"LockscreenBlurRadiusDefault"])
+        _settings.LockscreenBlurRadiusDefault = [[settings objectForKey:@"LockscreenBlurRadiusDefault"] boolValue];
 
 }
 

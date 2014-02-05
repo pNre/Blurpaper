@@ -67,6 +67,16 @@
 			<string>com.pNre.blurpaper/settingsupdated</string>
 		</dict>
 		<dict>
+			<key>isController</key>
+			<true/>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Blur radius</string>
+			<key>detail</key>
+			<string>BlurpaperSettingsLSBlurRadius</string>
+		</dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
@@ -129,6 +139,16 @@
 			<string>com.pNre.blurpaper/settingsupdated</string>
 		</dict>
 		<dict>
+			<key>isController</key>
+			<true/>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Blur radius</string>
+			<key>detail</key>
+			<string>BlurpaperSettingsHSBlurRadius</string>
+		</dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
@@ -138,7 +158,7 @@
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>label</key>
-			<string>Unlock blur fading</string>
+			<string>Fade blur on unlock</string>
 			<key>default</key>
 			<true/>
 			<key>key</key>

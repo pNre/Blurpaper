@@ -10,6 +10,7 @@ static void reloadSettings() {
         return;
 
     [[PNBlurController sharedInstance] applySettings:settings];
+    [[PNBlurController sharedInstance] settingsDidChange];
 
 }
 
@@ -17,18 +18,6 @@ static void reloadSettingsNotification(CFNotificationCenterRef notificationCente
 {
     reloadSettings();
 }
-
-%hook SpringBoard
-
-- (void)applicationDidFinishLaunching:(id)application {
-    
-    %orig;
-
-    reloadSettings();
-
-}
-
-%end
 
 %ctor {
 

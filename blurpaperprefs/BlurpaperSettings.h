@@ -4,3 +4,10 @@
 }
 @end
 
+@interface BlurpaperSettingsHSBlurRadius : PSListController {
+}
+@end
+
+@interface BlurpaperSettingsLSBlurRadius : PSListController {
+}
+@end

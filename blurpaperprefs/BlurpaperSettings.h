@@ -11,3 +11,7 @@
 @interface BlurpaperSettingsLSBlurRadius : PSListController {
 }
 @end
+
+@interface BlurpaperSettingsCCBlurRadius : PSListController {
+}
+@end

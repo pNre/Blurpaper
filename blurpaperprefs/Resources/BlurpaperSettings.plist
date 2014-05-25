@@ -148,6 +148,78 @@
 			<key>detail</key>
 			<string>BlurpaperSettingsHSBlurRadius</string>
 		</dict>
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>label</key>
+            <string>ControlCenter</string>
+        </dict>
+        <dict>
+            <key>PostNotification</key>
+            <string>com.pNre.blurpaper/settingsupdated</string>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <true/>
+            <key>defaults</key>
+            <string>com.pNre.blurpaper</string>
+            <key>key</key>
+            <string>ControlCenter</string>
+            <key>label</key>
+            <string>Enable blur</string>
+        </dict>
+        <dict>
+            <key>cell</key>
+            <string>PSLinkListCell</string>
+            <key>label</key>
+            <string>ControlCenter blur style</string>
+            <key>detail</key>
+            <string>PSListItemsController</string>
+            <key>default</key>
+            <string>Blur</string>
+            <key>key</key>
+            <string>ControlCenterStyle</string>
+            <key>defaults</key>
+            <string>com.pNre.blurpaper</string>
+            <key>validValues</key>
+            <array>
+                <string>UltraLight</string>
+                <string>Light</string>
+                <string>AdaptiveLight</string>
+                <string>SemiLight</string>
+                <string>Blur</string>
+                <string>BlurDefault</string>
+                <string>Dark</string>
+                <string>DarkZoom</string>
+                <string>UltraDark</string>
+                <string>BW</string>
+            </array>
+            <key>validTitles</key>
+            <array>
+                <string>Ultra Light</string>
+                <string>Light</string>
+                <string>Adaptive Light</string>
+                <string>Semi Light</string>
+                <string>Default</string>
+                <string>Blur</string>
+                <string>Dark</string>
+                <string>Dark Zoom</string>
+                <string>Ultra Dark</string>
+                <string>B &amp; W</string>
+            </array>
+            <key>PostNotification</key>
+            <string>com.pNre.blurpaper/settingsupdated</string>
+        </dict>
+        <dict>
+            <key>isController</key>
+            <true/>
+            <key>cell</key>
+            <string>PSLinkCell</string>
+            <key>label</key>
+            <string>Blur radius</string>
+            <key>detail</key>
+            <string>BlurpaperSettingsCCBlurRadius</string>
+        </dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>

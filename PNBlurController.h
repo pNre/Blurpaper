@@ -17,6 +17,7 @@
         //  Wallpapers
         BOOL BlurLockscreen;
         BOOL BlurHomescreen;
+        BOOL BlurControlCenter;
 
         //  Radius
         CGFloat HomescreenBlurRadius;
@@ -25,9 +26,13 @@
         CGFloat LockscreenBlurRadius;
         BOOL LockscreenBlurRadiusDefault;
 
+        CGFloat ControlCenterBlurRadius;
+        BOOL ControlCenterBlurRadiusDefault;
+
         //  Blur classes
         Class LockscreenBlurClass;
         Class HomescreenBlurClass;
+        Class ControlCenterBlurClass;
 
     } settings;
 

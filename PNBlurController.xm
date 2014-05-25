@@ -154,10 +154,11 @@
 void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentContainerView * view, _UIBackdropView * replaceView) {
 
     _UIBackdropView * &_originalBackdrop = MSHookIvar<_UIBackdropView *>(view, "_backdropView");
-
-    if (!_originalBackdrop || !replaceView)
+    if (!_originalBackdrop || !replaceView || replaceView == _originalBackdrop)
         return;
 
+    UIView* superview = [_originalBackdrop superview];
+    int viewIndex = [[superview subviews] indexOfObject:_originalBackdrop];
     [_originalBackdrop removeFromSuperview];
     [_originalBackdrop release];
         
@@ -165,7 +166,7 @@ void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentCo
     [_originalBackdrop setAppliesOutputSettingsAnimationDuration:1.0];
     [_originalBackdrop setGroupName:@"ControlCenter"];
 
-    [view insertSubview:_originalBackdrop atIndex:0];
+    [superview insertSubview:_originalBackdrop atIndex:viewIndex];
 }
 
 - (void)applyBackdropToControlCenter {

@@ -36,3 +36,15 @@
 }
 
 @end
+
+@implementation BlurpaperSettingsCCBlurRadius
+
+- (id)specifiers {
+
+    if (_specifiers == nil)
+        _specifiers = [[self loadSpecifiersFromPlistName:@"BlurpaperSettingsCCBlurRadius" target:self] retain];
+
+    return _specifiers;
+}
+
+@end

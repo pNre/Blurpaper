@@ -219,3 +219,13 @@ UIKIT_EXTERN BOOL _UIAccessibilityEnhanceBackgroundContrast();
 
 @end
 
+@interface SBControlCenterViewController : UIViewController
+@end
+
+@interface SBControlCenterContentContainerView : UIView
+-(void)setBackdropView:(_UIBackdropView *)view;
+@end
+
+@interface SBControlCenterContainerView : UIView
+@end
+

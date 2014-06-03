@@ -9,6 +9,8 @@
 #import "Private.h"
 #import "Logging.h"
 
+#define kBackdropCCStyle 0x080C
+
 @implementation PNBlurController {
     NSDictionary * _blurClasses;
     BOOL _didLoadSettings;
@@ -44,14 +46,19 @@
 
         _settings.BlurHomescreen = YES;
         _settings.BlurLockscreen = YES;
+        _settings.BlurControlCenter = YES;
 
         _settings.HomescreenBlurRadius = 2;
         _settings.HomescreenBlurRadiusDefault = YES;
         _settings.LockscreenBlurRadius = 2;
         _settings.LockscreenBlurRadiusDefault = YES;
+        _settings.ControlCenterBlurRadius = 2;
+        _settings.ControlCenterBlurRadiusDefault = YES;
+
 
         _settings.HomescreenBlurClass = [PNBackdropViewSettingsDefault class];
         _settings.LockscreenBlurClass = [PNBackdropViewSettingsDefault class];
+        _settings.ControlCenterBlurClass = [%c(_UIBackdropViewSettingsDark) class];
 
         //  Load blur classes
         _blurClasses = [@{
@@ -109,7 +116,7 @@
 
 - (BOOL)shouldHook {
 
-    return _settings.TweakEnabled && (_settings.BlurHomescreen || _settings.BlurLockscreen);
+    return _settings.TweakEnabled && (_settings.BlurHomescreen || _settings.BlurLockscreen || _settings.BlurControlCenter);
 
 }
 
@@ -143,6 +150,45 @@
     [backdrop release];
 
 }
+
+void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentContainerView * view, _UIBackdropView * replaceView) {
+
+    _UIBackdropView * &_originalBackdrop = MSHookIvar<_UIBackdropView *>(view, "_backdropView");
+    if (!_originalBackdrop || !replaceView || replaceView == _originalBackdrop)
+        return;
+
+    UIView* superview = [_originalBackdrop superview];
+    int viewIndex = [[superview subviews] indexOfObject:_originalBackdrop];
+    [_originalBackdrop removeFromSuperview];
+    [_originalBackdrop release];
+        
+    _originalBackdrop = replaceView;
+    [_originalBackdrop setAppliesOutputSettingsAnimationDuration:1.0];
+    [_originalBackdrop setGroupName:@"ControlCenter"];
+
+    [superview insertSubview:_originalBackdrop atIndex:viewIndex];
+}
+
+- (void)applyBackdropToControlCenter {
+
+    SBControlCenterViewController * viewController = MSHookIvar<SBControlCenterViewController *>([%c(SBControlCenterController) sharedInstance], "_viewController");
+    SBControlCenterContainerView *containerView = MSHookIvar<SBControlCenterContainerView *>(viewController, "_containerView");
+    SBControlCenterContentContainerView *contentContainerView = MSHookIvar<SBControlCenterContentContainerView *>(containerView, "_contentContainerView");
+    
+    _UIBackdropView* backdrop = nil;
+    if (!_settings.TweakEnabled || !_settings.BlurControlCenter) {
+        backdrop = [[_UIBackdropView alloc] initWithPrivateStyle:kBackdropCCStyle];
+    }
+    else {
+        Class backdropClass = _settings.ControlCenterBlurClass;
+        backdrop = [[PNBackdropView alloc] initWithSettingsClass:backdropClass];
+        if (!self.settings.ControlCenterBlurRadiusDefault) {
+            [backdrop.inputSettings setBlurRadius:self.settings.ControlCenterBlurRadius];
+        }
+    }
+    SBControlCenterContentContainerViewReplaceBackdrop(contentContainerView, backdrop);
+}
+
 
 - (void)applyDockChangesOnView:(SBDockView *)dockView {
 
@@ -210,6 +256,8 @@
     [[%c(SBWallpaperController) sharedInstance] _updateEffectViewForVariant:kVariantLockscreen withFactory:nil];
     [[%c(SBWallpaperController) sharedInstance] _updateEffectViewForVariant:kVariantHomescreen withFactory:nil];
 
+    [self applyBackdropToControlCenter];
+
 }
 
 //  Load settings from settings dictionary
@@ -232,6 +280,10 @@
     if ([settings objectForKey:@"Lockscreen"])
         _settings.BlurLockscreen = [[settings objectForKey:@"Lockscreen"] boolValue];
 
+    if ([settings objectForKey:@"ControlCenter"])
+        _settings.BlurControlCenter = [[settings objectForKey:@"ControlCenter"] boolValue];
+
+
     if ([settings objectForKey:@"Parallax"])
         _settings.ParallaxEnabled = [[settings objectForKey:@"Parallax"] boolValue];
     
@@ -243,6 +295,9 @@
 
     if ([settings objectForKey:@"HomescreenStyle"])
         _settings.HomescreenBlurClass = [_blurClasses objectForKey:[settings objectForKey:@"HomescreenStyle"]];
+
+    if ([settings objectForKey:@"ControlCenterStyle"])
+        _settings.ControlCenterBlurClass = [_blurClasses objectForKey:[settings objectForKey:@"ControlCenterStyle"]];
     
     if (!_settings.LockscreenBlurClass)
         _settings.LockscreenBlurClass = [%c(_UIBackdropViewSettingsBlur) class];
@@ -250,17 +305,26 @@
     if (!_settings.HomescreenBlurClass)
         _settings.HomescreenBlurClass = [%c(_UIBackdropViewSettingsBlur) class];
 
+    if (!_settings.ControlCenterBlurClass)
+        _settings.ControlCenterBlurClass = [%c(_UIBackdropViewSettingsDark) class];
+
     if ([settings objectForKey:@"HomescreenBlurRadius"])
         _settings.HomescreenBlurRadius = [[settings objectForKey:@"HomescreenBlurRadius"] floatValue];
 
     if ([settings objectForKey:@"LockscreenBlurRadius"])
         _settings.LockscreenBlurRadius = [[settings objectForKey:@"LockscreenBlurRadius"] floatValue];
+
+    if ([settings objectForKey:@"ControlCenterBlurRadius"])
+        _settings.ControlCenterBlurRadius = [[settings objectForKey:@"ControlCenterBlurRadius"] floatValue];
     
     if ([settings objectForKey:@"HomescreenBlurRadiusDefault"])
         _settings.HomescreenBlurRadiusDefault = [[settings objectForKey:@"HomescreenBlurRadiusDefault"] boolValue];
 
     if ([settings objectForKey:@"LockscreenBlurRadiusDefault"])
         _settings.LockscreenBlurRadiusDefault = [[settings objectForKey:@"LockscreenBlurRadiusDefault"] boolValue];
+
+    if ([settings objectForKey:@"LockscreenBlurRadiusDefault"])
+        _settings.ControlCenterBlurRadiusDefault = [[settings objectForKey:@"ControlCenterBlurRadiusDefault"] boolValue];
 
 }
 

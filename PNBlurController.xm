@@ -110,7 +110,7 @@
 //  Check if homescreen and lockscreen are using the same wallpaper & blur style
 - (BOOL)variantsShareBlur {
 
-    return ([self.settings.HomescreenBlurClass isEqual:self.settings.LockscreenBlurClass]) && self.settings.BlurHomescreen && self.settings.BlurLockscreen;
+    return ([self.settings.HomescreenBlurClass isEqual:self.settings.LockscreenBlurClass]) && (self.settings.BlurHomescreen == self.settings.BlurLockscreen);
 
 }
 
@@ -146,7 +146,7 @@
     }
 
     [view addSubview:backdrop];
-    
+
     [backdrop release];
 
 }
@@ -161,7 +161,7 @@ void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentCo
     int viewIndex = [[superview subviews] indexOfObject:_originalBackdrop];
     [_originalBackdrop removeFromSuperview];
     [_originalBackdrop release];
-        
+
     _originalBackdrop = replaceView;
     [_originalBackdrop setAppliesOutputSettingsAnimationDuration:1.0];
     [_originalBackdrop setGroupName:@"ControlCenter"];
@@ -174,7 +174,7 @@ void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentCo
     SBControlCenterViewController * viewController = MSHookIvar<SBControlCenterViewController *>([%c(SBControlCenterController) sharedInstance], "_viewController");
     SBControlCenterContainerView *containerView = MSHookIvar<SBControlCenterContainerView *>(viewController, "_containerView");
     SBControlCenterContentContainerView *contentContainerView = MSHookIvar<SBControlCenterContentContainerView *>(containerView, "_contentContainerView");
-    
+
     _UIBackdropView* backdrop = nil;
     if (!_settings.TweakEnabled || !_settings.BlurControlCenter) {
         backdrop = [[_UIBackdropView alloc] initWithPrivateStyle:kBackdropCCStyle];
@@ -286,7 +286,7 @@ void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentCo
 
     if ([settings objectForKey:@"Parallax"])
         _settings.ParallaxEnabled = [[settings objectForKey:@"Parallax"] boolValue];
-    
+
     if ([settings objectForKey:@"BlurFading"])
         _settings.BlurFading = [[settings objectForKey:@"BlurFading"] boolValue];
 
@@ -298,10 +298,10 @@ void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentCo
 
     if ([settings objectForKey:@"ControlCenterStyle"])
         _settings.ControlCenterBlurClass = [_blurClasses objectForKey:[settings objectForKey:@"ControlCenterStyle"]];
-    
+
     if (!_settings.LockscreenBlurClass)
         _settings.LockscreenBlurClass = [%c(_UIBackdropViewSettingsBlur) class];
-    
+
     if (!_settings.HomescreenBlurClass)
         _settings.HomescreenBlurClass = [%c(_UIBackdropViewSettingsBlur) class];
 
@@ -316,7 +316,7 @@ void SBControlCenterContentContainerViewReplaceBackdrop(SBControlCenterContentCo
 
     if ([settings objectForKey:@"ControlCenterBlurRadius"])
         _settings.ControlCenterBlurRadius = [[settings objectForKey:@"ControlCenterBlurRadius"] floatValue];
-    
+
     if ([settings objectForKey:@"HomescreenBlurRadiusDefault"])
         _settings.HomescreenBlurRadiusDefault = [[settings objectForKey:@"HomescreenBlurRadiusDefault"] boolValue];
 
